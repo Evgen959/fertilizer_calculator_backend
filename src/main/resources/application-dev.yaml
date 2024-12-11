@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: Fertilizer_calculator
+  datasource:
+    url: jdbc:mysql://localhost:${DATABASE_PORT:3306}/${DATABASE_NAME:doc_dev}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+#logging:
+#  level:
+#    org.hibernate.type.descriptor.sql: DEBUG
+
+#base:
+#  url: ${base:url:http://localhost:8080}
