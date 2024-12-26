@@ -40,11 +40,19 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_calculatedOfFertilizer", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей users
+            inverseJoinColumns = @JoinColumn(name = "calculatedOfFertilizer_id") // колонка для связи с таблицей calculatedOfFertilizer
+    )
+    private Set<CalculatedOfFertilizer> calculated = new HashSet<>();
+
 
     public User() {
     }
 
-    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles) {
+    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles, Set<CalculatedOfFertilizer> calculated) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -52,6 +60,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.roles = roles;
+        this.calculated = calculated;
     }
 
     public Set<Role> getRoles() {

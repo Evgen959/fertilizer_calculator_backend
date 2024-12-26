@@ -1,12 +1,11 @@
 package org.example.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,27 +15,28 @@ public class Plant {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // Уникальный идентификатор растения
     private String plantName; // Название растения
-    private int numberOfDays; // Полный период вегетации
+
+    @ManyToMany
+    @JoinTable(
+            name = "plant_periodVegetation", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "plant_id"), // колонка для связи с таблицей plant
+            inverseJoinColumns = @JoinColumn(name = "periodVegetation_id") // колонка для связи с таблицей periodVegetation
+    )
+    private Set<PeriodVegetation> periodVegetation = new HashSet<>(); // Период вегетации
+
     private String description; // Описание растения
-    private BigDecimal CaO; // Химический элемент оксид кальция необходимый для растения
-    private BigDecimal Mg; // Химический элемент сульфат магния необходимый для растения
-    private BigDecimal N; // Химический элемент азот необходимый для растения
-    private BigDecimal P; // Химический элемент фосфор необходимый для растения
-    private BigDecimal K; // Химический элемент калий необходимый для растения
+
+    @ManyToMany(mappedBy = "plant") // Связь с CalculatedOfFertilizer
+    private Set<CalculatedOfFertilizer> calculatedOfFertilizer = new HashSet<>();
 
     public Plant() {
     }
 
-    public Plant(UUID id, String plantName, int numberOfDays, String description, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public Plant(UUID id, String plantName, Set<PeriodVegetation> periodVegetation, String description) {
         this.id = id;
         this.plantName = plantName;
-        this.numberOfDays = numberOfDays;
+        this.periodVegetation = periodVegetation;
         this.description = description;
-        this.CaO = caO;
-        this.Mg = mg;
-        this.N = n;
-        this.P = p;
-        this.K = k;
     }
 
     public UUID getId() {
@@ -55,12 +55,12 @@ public class Plant {
         this.plantName = plantName;
     }
 
-    public int getNumberOfDays() {
-        return numberOfDays;
+    public Set<PeriodVegetation> getPeriodVegetation() {
+        return periodVegetation;
     }
 
-    public void setNumberOfDays(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
+    public void setPeriodVegetation(Set<PeriodVegetation> periodVegetation) {
+        this.periodVegetation = periodVegetation;
     }
 
     public String getDescription() {
@@ -71,44 +71,12 @@ public class Plant {
         this.description = description;
     }
 
-    public BigDecimal getCaO() {
-        return CaO;
+    public Set<CalculatedOfFertilizer> getCalculatedOfFertilizer() {
+        return calculatedOfFertilizer;
     }
 
-    public void setCaO(BigDecimal caO) {
-        CaO = caO;
-    }
-
-    public BigDecimal getMg() {
-        return Mg;
-    }
-
-    public void setMg(BigDecimal mg) {
-        Mg = mg;
-    }
-
-    public BigDecimal getN() {
-        return N;
-    }
-
-    public void setN(BigDecimal n) {
-        N = n;
-    }
-
-    public BigDecimal getP() {
-        return P;
-    }
-
-    public void setP(BigDecimal p) {
-        P = p;
-    }
-
-    public BigDecimal getK() {
-        return K;
-    }
-
-    public void setK(BigDecimal k) {
-        K = k;
+    public void setCalculatedOfFertilizer(Set<CalculatedOfFertilizer> calculatedOfFertilizer) {
+        this.calculatedOfFertilizer = calculatedOfFertilizer;
     }
 
     @Override
@@ -123,4 +91,5 @@ public class Plant {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

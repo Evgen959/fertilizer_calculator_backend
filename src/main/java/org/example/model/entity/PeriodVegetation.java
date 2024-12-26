@@ -1,12 +1,10 @@
 package org.example.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +16,10 @@ public class PeriodVegetation {
     private String periodVegetationName; // Название периода вегетации
     private int numberOfDays; // Период вегетации
     private String description; // Описание период вегетации
+
+    @ManyToMany(mappedBy = "periodVegetation") // Связь с plant
+    private Set<Plant> plant;
+
     private BigDecimal CaO; // Химический элемент оксид кальция
     private BigDecimal Mg; // Химический элемент сульфат магния
     private BigDecimal N; // Химический элемент азот
@@ -27,16 +29,25 @@ public class PeriodVegetation {
     public PeriodVegetation() {
     }
 
-    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Set<Plant> plant, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
         this.id = id;
         this.periodVegetationName = periodVegetationName;
         this.numberOfDays = numberOfDays;
         this.description = description;
+        this.plant = plant;
         this.CaO = caO;
         this.Mg = mg;
         this.N = n;
         this.P = p;
         this.K = k;
+    }
+
+    public Set<Plant> getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Set<Plant> plant) {
+        this.plant = plant;
     }
 
     public UUID getId() {

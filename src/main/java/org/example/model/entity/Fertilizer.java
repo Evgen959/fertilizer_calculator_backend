@@ -3,7 +3,9 @@ package org.example.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -15,16 +17,21 @@ public class Fertilizer {
     private UUID id;// Уникальный идентификатор удобрения
     private String fertilizerName; // Название удобрения
     private String description; // Описание удобрения
+
+    @ManyToMany(mappedBy = "fertilizer") // Связь с CalculatedOfFertilizer
+    private Set<CalculatedOfFertilizer> calculatedOfFertilizer = new HashSet<>();
+
     private BigDecimal CaO; // Химический элемент оксид кальция входящий в состав удобрения
-    private BigDecimal Mg; // Химический элемент сульфот магния входящий в состав удобрения
+    private BigDecimal Mg; // Химический элемент сульфат магния входящий в состав удобрения
     private BigDecimal N; // Химический элемент азот входящий в состав удобрения
     private BigDecimal P; // Химический элемент фосфор входящий в состав удобрения
     private BigDecimal K; // Химический элемент калий входящий в состав удобрения
 
-    public Fertilizer(UUID id, String fertilizerName, String description, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public Fertilizer(UUID id, String fertilizerName, String description, Set<CalculatedOfFertilizer> calculatedOfFertilizer, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
         this.id = id;
         this.fertilizerName = fertilizerName;
         this.description = description;
+        this.calculatedOfFertilizer = calculatedOfFertilizer;
         this.CaO = caO;
         this.Mg = mg;
         this.N = n;
