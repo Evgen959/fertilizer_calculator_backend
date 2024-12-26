@@ -16,6 +16,16 @@ public class CalculatedOfFertilizer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // Уникальный идентификатор расчитаных удобрений
 
+    private String calculatedName;
+
+    @ManyToMany
+    @JoinTable(
+            name = "calculatedOfFertilizer_plant", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "calculatedOfFertilizer_id"), // колонка для связи с таблицей calculatedOfFertilizer
+            inverseJoinColumns = @JoinColumn(name = "plant_id") // колонка для связи с таблицей plant
+    )
+    private Set<Plant> plant; // Растение
+
     @ManyToMany
     @JoinTable(
         name = "calculatedOfFertilizer_fertilizer", // имя связующей таблицы
@@ -26,14 +36,6 @@ public class CalculatedOfFertilizer {
 
     private int weight; // Рассчитанный вес удобрения
 
-    @ManyToMany
-    @JoinTable(
-            name = "calculatedOfFertilizer_plant", // имя связующей таблицы
-            joinColumns = @JoinColumn(name = "calculatedOfFertilizer_id"), // колонка для связи с таблицей calculatedOfFertilizer
-            inverseJoinColumns = @JoinColumn(name = "plant_id") // колонка для связи с таблицей plant
-    )
-    private Set<Plant> plant; // Растение
-
     @ManyToMany(mappedBy = "calculated")
     private final Set<User> users = new HashSet<>(); // Кто создал расчет удобрений
 
@@ -41,11 +43,12 @@ public class CalculatedOfFertilizer {
     private LocalDateTime createdAt; // Дата внесения в БД расчета
 
 
-    public CalculatedOfFertilizer(UUID id, Set<Fertilizer> fertilizer, int weight, Set<Plant> plant, LocalDateTime createdAt) {
+    public CalculatedOfFertilizer(UUID id, String calculatedName, Set<Plant> plant, Set<Fertilizer> fertilizer, int weight, LocalDateTime createdAt) {
         this.id = id;
+        this.calculatedName = calculatedName;
+        this.plant = plant;
         this.fertilizer = fertilizer;
         this.weight = weight;
-        this.plant = plant;
         this.createdAt = createdAt;
     }
 
