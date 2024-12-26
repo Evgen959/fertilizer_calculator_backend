@@ -6,7 +6,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -30,21 +32,43 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Override
-    public String toString() {
-        return String.format("User : id - %s, username - %s", id, username);
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей users
+            inverseJoinColumns = @JoinColumn(name = "role_id") // колонка для связи с таблицей roles
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_calculatedOfFertilizer", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей users
+            inverseJoinColumns = @JoinColumn(name = "calculatedOfFertilizer_id") // колонка для связи с таблицей calculatedOfFertilizer
+    )
+    private Set<CalculatedOfFertilizer> calculated = new HashSet<>();
+
 
     public User() {
     }
 
-    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles, Set<CalculatedOfFertilizer> calculated) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.roles = roles;
+        this.calculated = calculated;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public UUID getId() {
@@ -93,6 +117,11 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User : id - %s, username - %s", id, username);
     }
 
     @Override
