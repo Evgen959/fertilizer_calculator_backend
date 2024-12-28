@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PlantMapper {
 
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "id", ignore = true) // аннотация исключает введение пользователем id
     Plant mapDtoToEntity(PlantDTO dto);
 
     PlantDTO mapEntityToDto(Plant entity);

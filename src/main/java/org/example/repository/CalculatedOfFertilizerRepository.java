@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface CalculatedOfFertilizerRepository extends JpaRepository<CalculatedOfFertilizer, UUID> {
+
+    CalculatedOfFertilizer findCalculatedOfFertilizerByCalculatedOfFertilizerName(String calculatedOfFertilizerName);
 }
