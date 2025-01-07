@@ -90,7 +90,8 @@ public class FertilizerCalculator {
             double[] targets = {caoTarget, nTarget, pTarget, kTarget};
             for (int i = 0; i < 4; i++) {
                 double error = Math.abs(calculatedTargets[i] - targets[i]);
-                System.out.printf("%s: %.2f (погрешность: %.2f)%n", elements[i], calculatedTargets[i], error);
+                double errorPercentage = (error != 0) ? (error / targets[i]) * 100 : 0; // Если цель равна 0, погрешность 0%
+                System.out.printf("%s: %.2f (погрешность: %.2f %%)%n", elements[i], calculatedTargets[i], errorPercentage);
             }
         } else {
             System.out.println("Решение не найдено.");
