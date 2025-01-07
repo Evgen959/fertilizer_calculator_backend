@@ -21,13 +21,13 @@ public class Fertilizer {
     @ManyToMany(mappedBy = "fertilizer") // Связь с CalculatedOfFertilizer
     private Set<CalculatedOfFertilizer> calculatedOfFertilizer = new HashSet<>();
 
-    private BigDecimal CaO; // Химический элемент оксид кальция входящий в состав удобрения
-    private BigDecimal Mg; // Химический элемент сульфат магния входящий в состав удобрения
-    private BigDecimal N; // Химический элемент азот входящий в состав удобрения
-    private BigDecimal P; // Химический элемент фосфор входящий в состав удобрения
-    private BigDecimal K; // Химический элемент калий входящий в состав удобрения
+    private double CaO; // Химический элемент оксид кальция входящий в состав удобрения
+    private double Mg; // Химический элемент сульфат магния входящий в состав удобрения
+    private double N; // Химический элемент азот входящий в состав удобрения
+    private double P; // Химический элемент фосфор входящий в состав удобрения
+    private double K; // Химический элемент калий входящий в состав удобрения
 
-    public Fertilizer(UUID id, String fertilizerName, String description, Set<CalculatedOfFertilizer> calculatedOfFertilizer, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public Fertilizer(UUID id, String fertilizerName, String description, Set<CalculatedOfFertilizer> calculatedOfFertilizer, double caO, double mg, double n, double p, double k) {
         this.id = id;
         this.fertilizerName = fertilizerName;
         this.description = description;
@@ -43,44 +43,52 @@ public class Fertilizer {
 
     }
 
-    public BigDecimal getK() {
-        return K;
+    public Set<CalculatedOfFertilizer> getCalculatedOfFertilizer() {
+        return calculatedOfFertilizer;
     }
 
-    public void setK(BigDecimal k) {
-        K = k;
+    public void setCalculatedOfFertilizer(Set<CalculatedOfFertilizer> calculatedOfFertilizer) {
+        this.calculatedOfFertilizer = calculatedOfFertilizer;
     }
 
-    public BigDecimal getP() {
-        return P;
-    }
-
-    public void setP(BigDecimal p) {
-        P = p;
-    }
-
-    public BigDecimal getN() {
-        return N;
-    }
-
-    public void setN(BigDecimal n) {
-        N = n;
-    }
-
-    public BigDecimal getMg() {
-        return Mg;
-    }
-
-    public void setMg(BigDecimal mg) {
-        Mg = mg;
-    }
-
-    public BigDecimal getCaO() {
+    public double getCaO() {
         return CaO;
     }
 
-    public void setCaO(BigDecimal caO) {
+    public void setCaO(double caO) {
         CaO = caO;
+    }
+
+    public double getMg() {
+        return Mg;
+    }
+
+    public void setMg(double mg) {
+        Mg = mg;
+    }
+
+    public double getN() {
+        return N;
+    }
+
+    public void setN(double n) {
+        N = n;
+    }
+
+    public double getP() {
+        return P;
+    }
+
+    public void setP(double p) {
+        P = p;
+    }
+
+    public double getK() {
+        return K;
+    }
+
+    public void setK(double k) {
+        K = k;
     }
 
     public String getDescription() {

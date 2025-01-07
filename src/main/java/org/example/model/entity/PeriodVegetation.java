@@ -2,7 +2,6 @@ package org.example.model.entity;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -20,16 +19,16 @@ public class PeriodVegetation {
     @ManyToMany(mappedBy = "periodVegetation") // Связь с plant
     private Set<Plant> plant;
 
-    private BigDecimal CaO; // Химический элемент оксид кальция
-    private BigDecimal Mg; // Химический элемент сульфат магния
-    private BigDecimal N; // Химический элемент азот
-    private BigDecimal P; // Химический элемент фосфор
-    private BigDecimal K; // Химический элемент калий
+    private double CaO; // Химический элемент оксид кальция
+    private double Mg; // Химический элемент сульфат магния
+    private double N; // Химический элемент азот
+    private double P; // Химический элемент фосфор
+    private double K; // Химический элемент калий
 
     public PeriodVegetation() {
     }
 
-    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Set<Plant> plant, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Set<Plant> plant, double caO, double mg, double n, double p, double k) {
         this.id = id;
         this.periodVegetationName = periodVegetationName;
         this.numberOfDays = numberOfDays;
@@ -82,43 +81,43 @@ public class PeriodVegetation {
         this.description = description;
     }
 
-    public BigDecimal getCaO() {
+    public double getCaO() {
         return CaO;
     }
 
-    public void setCaO(BigDecimal caO) {
+    public void setCaO(double caO) {
         CaO = caO;
     }
 
-    public BigDecimal getMg() {
+    public double getMg() {
         return Mg;
     }
 
-    public void setMg(BigDecimal mg) {
+    public void setMg(double mg) {
         Mg = mg;
     }
 
-    public BigDecimal getN() {
+    public double getN() {
         return N;
     }
 
-    public void setN(BigDecimal n) {
+    public void setN(double n) {
         N = n;
     }
 
-    public BigDecimal getP() {
+    public double getP() {
         return P;
     }
 
-    public void setP(BigDecimal p) {
+    public void setP(double p) {
         P = p;
     }
 
-    public BigDecimal getK() {
+    public double getK() {
         return K;
     }
 
-    public void setK(BigDecimal k) {
+    public void setK(double k) {
         K = k;
     }
 
