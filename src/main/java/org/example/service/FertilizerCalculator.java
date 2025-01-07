@@ -11,42 +11,48 @@ public class FertilizerCalculator {
 
     public static void main(String[] args) {
 
-        // Целевые значения (сколько нужно азота, фосфора и калия)
+        // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
+        double caoTarget = 22; // Количество азота (CaO)
         double nTarget = 13; // Количество азота (N)
         double pTarget = 40;  // Количество фосфора (P)
         double kTarget = 13;  // Количество калия (K)
 
         // Состав удобрений (в процентах содержания, делим на 100)
         double[][] fertilizerComposition = {
-                {0.0 / 100, 52.0 / 100, 34.0 / 100}, // Удобрение 1
-                {15.5 / 100, 0.0 / 100, 0.0 / 100}, // Удобрение 2
-                {0.0 / 100, 0.0 / 100, 50.0 / 100},  // Удобрение 3
-                {0.0 / 100, 64.0 / 100, 0.0 / 100}  // Удобрение 4
+                {0.0 / 100, 0.0 / 100, 52.0 / 100, 34.0 / 100}, // Удобрение 1
+                {26.0 / 100, 15.5 / 100, 0.0 / 100, 0.0 / 100}, // Удобрение 2
+                {0.0 / 100, 0.0 / 100, 0.0 / 100, 50.0 / 100},  // Удобрение 3
+                {0.0 / 100, 0.0 / 100, 64.0 / 100, 0.0 / 100}  // Удобрение 4
         };
 
-        // Создание целевой функции: минимизация x1 + x2 + x3
+        // Создание целевой функции: минимизация x1 + x2 + x3 + 4x
         LinearObjectiveFunction objectiveFunction = new LinearObjectiveFunction(new double[]{1, 1, 1, 1}, 0);
 
         // Создание ограничений
         List<LinearConstraint> constraints = new ArrayList<>();
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][0], fertilizerComposition[1][0], fertilizerComposition[2][0], fertilizerComposition[3][0]}, // N-состав
-                Relationship.EQ,
+                new double[]{fertilizerComposition[0][0], fertilizerComposition[1][0], fertilizerComposition[2][0], fertilizerComposition[3][0]}, // CaO-состав
+                Relationship.LEQ, // меньше или равно (0.2xi + 0.15xzy + 0.1xz <= 100)
+                caoTarget
+        ));
+        constraints.add(new LinearConstraint(
+                new double[]{fertilizerComposition[0][1], fertilizerComposition[1][1], fertilizerComposition[2][1], fertilizerComposition[3][1]}, // N-состав
+                Relationship.EQ, // равенство (0.2xi + 0.15xzy + 0.1xz = 100)
                 nTarget
         ));
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][1], fertilizerComposition[1][1], fertilizerComposition[2][1], fertilizerComposition[3][1]}, // P-состав
+                new double[]{fertilizerComposition[0][2], fertilizerComposition[1][2], fertilizerComposition[2][2], fertilizerComposition[3][2]}, // P-состав
                 Relationship.EQ,
                 pTarget
         ));
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][2], fertilizerComposition[1][2], fertilizerComposition[2][2], fertilizerComposition[3][2]}, // K-состав
+                new double[]{fertilizerComposition[0][3], fertilizerComposition[1][3], fertilizerComposition[2][3], fertilizerComposition[3][3]}, // K-состав
                 Relationship.EQ,
                 kTarget
         ));
 
-        // Добавляем ограничения на не отрицательность x1, x2, x3
-        constraints.add(new LinearConstraint(new double[]{1, 0, 0, 0}, Relationship.GEQ, 0)); // x1 >= 0
+        // Добавляем ограничения на не отрицательность x1, x2, x3, x4
+        constraints.add(new LinearConstraint(new double[]{1, 0, 0, 0}, Relationship.GEQ, 0)); // x1 >= 0 (больше или равно - Relationship.GEQ)
         constraints.add(new LinearConstraint(new double[]{0, 1, 0, 0}, Relationship.GEQ, 0)); // x2 >= 0
         constraints.add(new LinearConstraint(new double[]{0, 0, 1, 0}, Relationship.GEQ, 0)); // x3 >= 0
         constraints.add(new LinearConstraint(new double[]{0, 0, 0, 1}, Relationship.GEQ, 0)); // x4 >= 0
@@ -73,16 +79,16 @@ public class FertilizerCalculator {
             }
 
             System.out.println("\nРассчитанное содержание:");
-            double[] calculatedTargets = new double[3];
-            for (int i = 0; i < 3; i++) {
+            double[] calculatedTargets = new double[4];
+            for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < quantities.length; j++) {
                     calculatedTargets[i] += quantities[j] * fertilizerComposition[j][i];
                 }
             }
 
-            String[] elements = {"N", "P", "K"};
-            double[] targets = {nTarget, pTarget, kTarget};
-            for (int i = 0; i < 3; i++) {
+            String[] elements = {"CaO","N", "P", "K"};
+            double[] targets = {caoTarget, nTarget, pTarget, kTarget};
+            for (int i = 0; i < 4; i++) {
                 double error = Math.abs(calculatedTargets[i] - targets[i]);
                 System.out.printf("%s: %.2f (погрешность: %.2f)%n", elements[i], calculatedTargets[i], error);
             }
