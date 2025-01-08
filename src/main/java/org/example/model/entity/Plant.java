@@ -22,6 +22,7 @@ public class Plant {
             joinColumns = @JoinColumn(name = "plant_id"), // колонка для связи с таблицей plant
             inverseJoinColumns = @JoinColumn(name = "periodVegetation_id") // колонка для связи с таблицей periodVegetation
     )
+    @Column(nullable = true) // Аннотация делает поле не обязательным для ввода.
     private Set<PeriodVegetation> periodVegetation = new HashSet<>(); // Период вегетации
 
     private String description; // Описание растения

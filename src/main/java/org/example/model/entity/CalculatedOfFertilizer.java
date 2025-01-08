@@ -16,7 +16,7 @@ public class CalculatedOfFertilizer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // Уникальный идентификатор расчитаных удобрений
 
-    private String calculatedName;
+    private String calculatedOfFertilizerName;
 
     @ManyToMany
     @JoinTable(
@@ -43,9 +43,9 @@ public class CalculatedOfFertilizer {
     private LocalDateTime createdAt; // Дата внесения в БД расчета
 
 
-    public CalculatedOfFertilizer(UUID id, String calculatedName, Set<Plant> plant, Set<Fertilizer> fertilizer, int weight, LocalDateTime createdAt) {
+    public CalculatedOfFertilizer(UUID id, String calculatedOfFertilizerName, Set<Plant> plant, Set<Fertilizer> fertilizer, int weight, LocalDateTime createdAt) {
         this.id = id;
-        this.calculatedName = calculatedName;
+        this.calculatedOfFertilizerName = calculatedOfFertilizerName;
         this.plant = plant;
         this.fertilizer = fertilizer;
         this.weight = weight;
@@ -53,6 +53,14 @@ public class CalculatedOfFertilizer {
     }
 
     public CalculatedOfFertilizer() {
+    }
+
+    public String getCalculatedOfFertilizerName() {
+        return calculatedOfFertilizerName;
+    }
+
+    public void setCalculatedOfFertilizerName(String calculatedOfFertilizerName) {
+        this.calculatedOfFertilizerName = calculatedOfFertilizerName;
     }
 
     public Set<Plant> getPlant() {
