@@ -37,6 +37,10 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return mapper.mapEntityToDto(repository.findCalculatedOfFertilizerByCalculatedOfFertilizerName(calculatedOfFertilizerName));
     }
 
+    // Todo переосмыслить сущность CalculatedOfFertilizer она нужна для сохранения посчитанных данных
+
+    // Todo написать метод для извлечения исходных данных для метода fertilizerCalculator
+
     private CalculatedOfFertilizerDTO fertilizerCalculator(CalculatedOfFertilizerDTO calculatedOfFertilizerDTO) {
 
         // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
