@@ -1,71 +1,45 @@
 package org.example.model.entity;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class CalculatedOfFertilizer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id; // Уникальный идентификатор расчитаных удобрений
+    private UUID id; // Уникальный идентификатор посчитанных удобрений
 
-    @ManyToMany
-    @JoinTable(
-        name = "calculatedOfFertilizer_fertilizer", // имя связующей таблицы
-        joinColumns = @JoinColumn(name = "calculatedOfFertilizer_id"), // колонка для связи с таблицей calculatedOfFertilizer
-        inverseJoinColumns = @JoinColumn(name = "fertilizer_id") // колонка для связи с таблицей fertilizer
-    )
-    private Set<Fertilizer> fertilizer = new HashSet<>(); // Удобрение
+    private String calculatedName; // название расчета
 
-    private int weight; // Рассчитанный вес удобрения
+    private String calculatedDescription; // описание
 
-    @ManyToMany
-    @JoinTable(
-            name = "calculatedOfFertilizer_plant", // имя связующей таблицы
-            joinColumns = @JoinColumn(name = "calculatedOfFertilizer_id"), // колонка для связи с таблицей calculatedOfFertilizer
-            inverseJoinColumns = @JoinColumn(name = "plant_id") // колонка для связи с таблицей plant
-    )
-    private Set<Plant> plant; // Растение
+    @ElementCollection
+    private Set<String> fertilizerName = new HashSet<>(); // название удобрений
 
-    @ManyToMany(mappedBy = "calculated")
-    private final Set<User> users = new HashSet<>(); // Кто создал расчет удобрений
+    @ElementCollection
+    private List<Double> weight = new ArrayList<>(); // Посчитанный вес удобрений
 
-    @CreatedDate
-    private LocalDateTime createdAt; // Дата внесения в БД расчета
+    @ElementCollection
+    private List<Double> calculationError = new ArrayList<>(); // погрешности расчета
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    // @NotNull: Это аннотация из Bean Validation API. Она применяется для проверки данных на уровне Java-кода (до сохранения в базу данных). Я думаю ее нужно использовать в DTO
+    private User user; // Кто создал расчет удобрений
 
-    public CalculatedOfFertilizer(UUID id, Set<Fertilizer> fertilizer, int weight, Set<Plant> plant, LocalDateTime createdAt) {
+    public CalculatedOfFertilizer(UUID id, String calculatedName, String calculatedDescription, Set<String> fertilizerName, List<Double> weight, List<Double> calculationError, User user) {
         this.id = id;
-        this.fertilizer = fertilizer;
+        this.calculatedName = calculatedName;
+        this.calculatedDescription = calculatedDescription;
+        this.fertilizerName = fertilizerName;
         this.weight = weight;
-        this.plant = plant;
-        this.createdAt = createdAt;
+        this.calculationError = calculationError;
+        this.user = user;
     }
 
     public CalculatedOfFertilizer() {
-    }
-
-    public Set<Plant> getPlant() {
-        return plant;
-    }
-
-    public void setPlant(Set<Plant> plant) {
-        this.plant = plant;
-    }
-
-    public Set<Fertilizer> getFertilizer() {
-        return fertilizer;
-    }
-
-    public void setFertilizer(Set<Fertilizer> fertilizer) {
-        this.fertilizer = fertilizer;
     }
 
     public UUID getId() {
@@ -76,35 +50,63 @@ public class CalculatedOfFertilizer {
         this.id = id;
     }
 
-   public int getWeight() {
+    public String getCalculatedName() {
+        return calculatedName;
+    }
+
+    public void setCalculatedName(String calculatedName) {
+        this.calculatedName = calculatedName;
+    }
+
+    public String getCalculatedDescription() {
+        return calculatedDescription;
+    }
+
+    public void setCalculatedDescription(String calculatedDescription) {
+        this.calculatedDescription = calculatedDescription;
+    }
+
+    public Set<String> getFertilizerName() {
+        return fertilizerName;
+    }
+
+    public void setFertilizerName(Set<String> fertilizerName) {
+        this.fertilizerName = fertilizerName;
+    }
+
+    public List<Double> getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(List<Double> weight) {
         this.weight = weight;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public List<Double> getCalculationError() {
+        return calculationError;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public void setCalculationError(List<Double> calculationError) {
+        this.calculationError = calculationError;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CalculatedOfFertilizer that)) return false;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) && Objects.equals(calculatedName, that.calculatedName) && Objects.equals(calculatedDescription, that.calculatedDescription) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(weight, that.weight) && Objects.equals(calculationError, that.calculationError) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id, calculatedName, calculatedDescription, fertilizerName, weight, calculationError, user);
     }
 }
