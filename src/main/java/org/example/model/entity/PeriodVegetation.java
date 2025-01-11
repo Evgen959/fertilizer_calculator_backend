@@ -2,6 +2,7 @@ package org.example.model.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -16,19 +17,21 @@ public class PeriodVegetation {
     private int numberOfDays; // Период вегетации
     private String description; // Описание период вегетации
 
-    @ManyToMany(mappedBy = "periodVegetation") // Связь с plant
-    private Set<Plant> plant;
+    @ManyToOne // Связь с plant
+    @JoinColumn(name = "plant_id", nullable = false)
+    // @NotNull: Это аннотация из Bean Validation API. Она применяется для проверки данных на уровне Java-кода (до сохранения в базу данных). Я думаю ее нужно использовать в DTO
+    private Plant plant;
 
-    private double CaO; // Химический элемент оксид кальция
-    private double Mg; // Химический элемент сульфат магния
-    private double N; // Химический элемент азот
-    private double P; // Химический элемент фосфор
-    private double K; // Химический элемент калий
+    private BigDecimal CaO; // Химический элемент оксид кальция необходимый растению в данный период вегетации
+    private BigDecimal Mg; // Химический элемент сульфат магния необходимый растению в данный период вегетации
+    private BigDecimal N; // Химический элемент азот необходимый растению в данный период вегетации
+    private BigDecimal P; // Химический элемент фосфор необходимый растению в данный период вегетации
+    private BigDecimal K; // Химический элемент калий необходимый растению в данный период вегетации
 
     public PeriodVegetation() {
     }
 
-    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Set<Plant> plant, double caO, double mg, double n, double p, double k) {
+    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Plant plant, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
         this.id = id;
         this.periodVegetationName = periodVegetationName;
         this.numberOfDays = numberOfDays;
@@ -39,14 +42,6 @@ public class PeriodVegetation {
         this.N = n;
         this.P = p;
         this.K = k;
-    }
-
-    public Set<Plant> getPlant() {
-        return plant;
-    }
-
-    public void setPlant(Set<Plant> plant) {
-        this.plant = plant;
     }
 
     public UUID getId() {
@@ -81,43 +76,51 @@ public class PeriodVegetation {
         this.description = description;
     }
 
-    public double getCaO() {
+    public Plant getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Plant plant) {
+        this.plant = plant;
+    }
+
+    public BigDecimal getCaO() {
         return CaO;
     }
 
-    public void setCaO(double caO) {
+    public void setCaO(BigDecimal caO) {
         CaO = caO;
     }
 
-    public double getMg() {
+    public BigDecimal getMg() {
         return Mg;
     }
 
-    public void setMg(double mg) {
+    public void setMg(BigDecimal mg) {
         Mg = mg;
     }
 
-    public double getN() {
+    public BigDecimal getN() {
         return N;
     }
 
-    public void setN(double n) {
+    public void setN(BigDecimal n) {
         N = n;
     }
 
-    public double getP() {
+    public BigDecimal getP() {
         return P;
     }
 
-    public void setP(double p) {
+    public void setP(BigDecimal p) {
         P = p;
     }
 
-    public double getK() {
+    public BigDecimal getK() {
         return K;
     }
 
-    public void setK(double k) {
+    public void setK(BigDecimal k) {
         K = k;
     }
 

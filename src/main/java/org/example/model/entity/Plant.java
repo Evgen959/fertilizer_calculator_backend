@@ -16,28 +16,23 @@ public class Plant {
     private UUID id; // Уникальный идентификатор растения
     private String plantName; // Название растения
 
-    @ManyToMany
-    @JoinTable(
-            name = "plant_periodVegetation", // имя связующей таблицы
-            joinColumns = @JoinColumn(name = "plant_id"), // колонка для связи с таблицей plant
-            inverseJoinColumns = @JoinColumn(name = "periodVegetation_id") // колонка для связи с таблицей periodVegetation
-    )
-    @Column(nullable = true) // Аннотация делает поле не обязательным для ввода.
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PeriodVegetation> periodVegetation = new HashSet<>(); // Период вегетации
 
     private String description; // Описание растения
 
-    @ManyToMany(mappedBy = "plant") // Связь с CalculatedOfFertilizer
-    private Set<CalculatedOfFertilizer> calculatedOfFertilizer = new HashSet<>();
+    @ManyToMany(mappedBy = "plant") // Связь с user
+    private Set<User> user = new HashSet<>();
 
     public Plant() {
     }
 
-    public Plant(UUID id, String plantName, Set<PeriodVegetation> periodVegetation, String description) {
+    public Plant(UUID id, String plantName, Set<PeriodVegetation> periodVegetation, String description, Set<User> user) {
         this.id = id;
         this.plantName = plantName;
         this.periodVegetation = periodVegetation;
         this.description = description;
+        this.user = user;
     }
 
     public UUID getId() {
@@ -72,12 +67,12 @@ public class Plant {
         this.description = description;
     }
 
-    public Set<CalculatedOfFertilizer> getCalculatedOfFertilizer() {
-        return calculatedOfFertilizer;
+    public Set<User> getUser() {
+        return user;
     }
 
-    public void setCalculatedOfFertilizer(Set<CalculatedOfFertilizer> calculatedOfFertilizer) {
-        this.calculatedOfFertilizer = calculatedOfFertilizer;
+    public void setUser(Set<User> user) {
+        this.user = user;
     }
 
     @Override

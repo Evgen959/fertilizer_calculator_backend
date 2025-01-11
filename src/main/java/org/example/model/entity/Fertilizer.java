@@ -2,6 +2,7 @@ package org.example.model.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -17,20 +18,19 @@ public class Fertilizer {
     private String fertilizerName; // Название удобрения
     private String description; // Описание удобрения
 
-    @ManyToMany(mappedBy = "fertilizer") // Связь с CalculatedOfFertilizer
-    private Set<CalculatedOfFertilizer> calculatedOfFertilizer = new HashSet<>();
+    @ManyToMany(mappedBy = "fertilizers")
+    private final Set<User> users = new HashSet<>();// поле для связи пользователя и удобрения
 
-    private double CaO; // Химический элемент оксид кальция входящий в состав удобрения
-    private double Mg; // Химический элемент сульфат магния входящий в состав удобрения
-    private double N; // Химический элемент азот входящий в состав удобрения
-    private double P; // Химический элемент фосфор входящий в состав удобрения
-    private double K; // Химический элемент калий входящий в состав удобрения
+    private BigDecimal CaO; // Химический элемент оксид кальция входящий в состав удобрения
+    private BigDecimal Mg; // Химический элемент сульфат магния входящий в состав удобрения
+    private BigDecimal N; // Химический элемент азот входящий в состав удобрения
+    private BigDecimal P; // Химический элемент фосфор входящий в состав удобрения
+    private BigDecimal K; // Химический элемент калий входящий в состав удобрения
 
-    public Fertilizer(UUID id, String fertilizerName, String description, Set<CalculatedOfFertilizer> calculatedOfFertilizer, double caO, double mg, double n, double p, double k) {
+    public Fertilizer(UUID id, String fertilizerName, String description, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
         this.id = id;
         this.fertilizerName = fertilizerName;
         this.description = description;
-        this.calculatedOfFertilizer = calculatedOfFertilizer;
         this.CaO = caO;
         this.Mg = mg;
         this.N = n;
@@ -42,60 +42,12 @@ public class Fertilizer {
 
     }
 
-    public Set<CalculatedOfFertilizer> getCalculatedOfFertilizer() {
-        return calculatedOfFertilizer;
+    public UUID getId() {
+        return id;
     }
 
-    public void setCalculatedOfFertilizer(Set<CalculatedOfFertilizer> calculatedOfFertilizer) {
-        this.calculatedOfFertilizer = calculatedOfFertilizer;
-    }
-
-    public double getCaO() {
-        return CaO;
-    }
-
-    public void setCaO(double caO) {
-        CaO = caO;
-    }
-
-    public double getMg() {
-        return Mg;
-    }
-
-    public void setMg(double mg) {
-        Mg = mg;
-    }
-
-    public double getN() {
-        return N;
-    }
-
-    public void setN(double n) {
-        N = n;
-    }
-
-    public double getP() {
-        return P;
-    }
-
-    public void setP(double p) {
-        P = p;
-    }
-
-    public double getK() {
-        return K;
-    }
-
-    public void setK(double k) {
-        K = k;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getFertilizerName() {
@@ -106,12 +58,56 @@ public class Fertilizer {
         this.fertilizerName = fertilizerName;
     }
 
-    public UUID getId() {
-        return id;
+    public String getDescription() {
+        return description;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public BigDecimal getCaO() {
+        return CaO;
+    }
+
+    public void setCaO(BigDecimal caO) {
+        CaO = caO;
+    }
+
+    public BigDecimal getMg() {
+        return Mg;
+    }
+
+    public void setMg(BigDecimal mg) {
+        Mg = mg;
+    }
+
+    public BigDecimal getN() {
+        return N;
+    }
+
+    public void setN(BigDecimal n) {
+        N = n;
+    }
+
+    public BigDecimal getP() {
+        return P;
+    }
+
+    public void setP(BigDecimal p) {
+        P = p;
+    }
+
+    public BigDecimal getK() {
+        return K;
+    }
+
+    public void setK(BigDecimal k) {
+        K = k;
     }
 
     @Override

@@ -40,19 +40,29 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_calculatedOfFertilizer", // имя связующей таблицы
-            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей users
-            inverseJoinColumns = @JoinColumn(name = "calculatedOfFertilizer_id") // колонка для связи с таблицей calculatedOfFertilizer
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CalculatedOfFertilizer> calculated = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_fertilizer", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей users
+            inverseJoinColumns = @JoinColumn(name = "fertilizer_id") // колонка для связи с таблицей roles
+    )
+    private Set<Fertilizer> fertilizers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_plant", // имя связующей таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // колонка для связи с таблицей user
+            inverseJoinColumns = @JoinColumn(name = "plant_id") // колонка для связи с таблицей plant
+    )
+    private Set<Plant> plant; // Растение
 
     public User() {
     }
 
-    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles, Set<CalculatedOfFertilizer> calculated) {
+    public User(UUID id, String username, String password, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles, Set<CalculatedOfFertilizer> calculated, Set<Fertilizer> fertilizers, Set<Plant> plant) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -61,14 +71,8 @@ public class User {
         this.updatedAt = updatedAt;
         this.roles = roles;
         this.calculated = calculated;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        this.fertilizers = fertilizers;
+        this.plant = plant;
     }
 
     public UUID getId() {
@@ -117,6 +121,38 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<CalculatedOfFertilizer> getCalculated() {
+        return calculated;
+    }
+
+    public void setCalculated(Set<CalculatedOfFertilizer> calculated) {
+        this.calculated = calculated;
+    }
+
+    public Set<Fertilizer> getFertilizers() {
+        return fertilizers;
+    }
+
+    public void setFertilizers(Set<Fertilizer> fertilizers) {
+        this.fertilizers = fertilizers;
+    }
+
+    public Set<Plant> getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Set<Plant> plant) {
+        this.plant = plant;
     }
 
     @Override
