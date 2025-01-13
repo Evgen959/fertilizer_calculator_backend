@@ -2,7 +2,6 @@ package org.example.model.entity;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,25 +24,25 @@ public class Fertilizer {
     @ManyToMany(mappedBy = "fertilizers")
     private final Set<User> users = new HashSet<>();// поле для связи пользователя и удобрения
 
-    private BigDecimal CaO; // Химический элемент оксид кальция входящий в состав удобрения
-    private BigDecimal Mg; // Химический элемент сульфат магния входящий в состав удобрения
-    private BigDecimal N; // Химический элемент азот входящий в состав удобрения
-    private BigDecimal P; // Химический элемент фосфор входящий в состав удобрения
-    private BigDecimal K; // Химический элемент калий входящий в состав удобрения
+    private double CaO; // Химический элемент оксид кальция входящий в состав удобрения
+    private double Mg; // Химический элемент сульфат магния входящий в состав удобрения
+    private double N; // Химический элемент азот входящий в состав удобрения
+    private double P; // Химический элемент фосфор входящий в состав удобрения
+    private double K; // Химический элемент калий входящий в состав удобрения
     public Fertilizer() {
 
     }
 
-    public Fertilizer(UUID id, String fertilizerName, String description, CalculatedOfFertilizer calculatedOfFertilizer, BigDecimal caO, BigDecimal mg, BigDecimal n, BigDecimal p, BigDecimal k) {
+    public Fertilizer(UUID id, String fertilizerName, String description, CalculatedOfFertilizer calculatedOfFertilizer, double caO, double mg, double n, double p, double k) {
         this.id = id;
         this.fertilizerName = fertilizerName;
         this.description = description;
         this.calculatedOfFertilizer = calculatedOfFertilizer;
-        CaO = caO;
-        Mg = mg;
-        N = n;
-        P = p;
-        K = k;
+        this.CaO = caO;
+        this.Mg = mg;
+        this.N = n;
+        this.P = p;
+        this.K = k;
     }
 
     public UUID getId() {
@@ -82,43 +81,43 @@ public class Fertilizer {
         return users;
     }
 
-    public BigDecimal getCaO() {
+    public double getCaO() {
         return CaO;
     }
 
-    public void setCaO(BigDecimal caO) {
+    public void setCaO(double caO) {
         CaO = caO;
     }
 
-    public BigDecimal getMg() {
+    public double getMg() {
         return Mg;
     }
 
-    public void setMg(BigDecimal mg) {
+    public void setMg(double mg) {
         Mg = mg;
     }
 
-    public BigDecimal getN() {
+    public double getN() {
         return N;
     }
 
-    public void setN(BigDecimal n) {
+    public void setN(double n) {
         N = n;
     }
 
-    public BigDecimal getP() {
+    public double getP() {
         return P;
     }
 
-    public void setP(BigDecimal p) {
+    public void setP(double p) {
         P = p;
     }
 
-    public BigDecimal getK() {
+    public double getK() {
         return K;
     }
 
-    public void setK(BigDecimal k) {
+    public void setK(double k) {
         K = k;
     }
 
@@ -126,7 +125,7 @@ public class Fertilizer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Fertilizer that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(description, that.description) && Objects.equals(calculatedOfFertilizer, that.calculatedOfFertilizer) && Objects.equals(users, that.users) && Objects.equals(CaO, that.CaO) && Objects.equals(Mg, that.Mg) && Objects.equals(N, that.N) && Objects.equals(P, that.P) && Objects.equals(K, that.K);
+        return Double.compare(CaO, that.CaO) == 0 && Double.compare(Mg, that.Mg) == 0 && Double.compare(N, that.N) == 0 && Double.compare(P, that.P) == 0 && Double.compare(K, that.K) == 0 && Objects.equals(id, that.id) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(description, that.description) && Objects.equals(calculatedOfFertilizer, that.calculatedOfFertilizer) && Objects.equals(users, that.users);
     }
 
     @Override
