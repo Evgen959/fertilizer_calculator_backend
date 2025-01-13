@@ -6,6 +6,8 @@ import org.apache.commons.math3.optim.linear.*;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.example.model.dto.CalculatedOfFertilizerDTO;
 import org.example.model.entity.CalculatedOfFertilizer;
+import org.example.model.entity.Fertilizer;
+import org.example.model.entity.PeriodVegetation;
 import org.example.repository.CalculatedOfFertilizerRepository;
 import org.example.service.interfeces.CalculatedOfFertilizerService;
 import org.example.service.mapping.CalculatedOfFertilizerMapper;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizerService {
@@ -37,17 +40,24 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return mapper.mapEntityToDto(repository.findCalculatedOfFertilizerByCalculatedOfFertilizerName(calculatedOfFertilizerName));
     }
 
-    // Todo переосмыслить сущность CalculatedOfFertilizer она нужна для сохранения посчитанных данных
-
     // Todo написать метод для извлечения исходных данных для метода fertilizerCalculator
 
+
+
     private CalculatedOfFertilizerDTO fertilizerCalculator(CalculatedOfFertilizerDTO calculatedOfFertilizerDTO) {
+
+        return null;
+    }
+
+    private void calculator (PeriodVegetation periodVegetation, Set<Fertilizer> fertilizerSet){
 
         // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
         double caoTarget = 22; // Количество азота (CaO)
         double nTarget = 13; // Количество азота (N)
         double pTarget = 40;  // Количество фосфора (P)
         double kTarget = 13;  // Количество калия (K)
+
+//        caoTarget = periodVegetation.getCaO();
 
         // Состав удобрений (в процентах содержания, делим на 100)
         double[][] fertilizerComposition = {
@@ -128,8 +138,6 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         } else {
             System.out.println("Решение не найдено.");
         }
-
-        return null;
 
     }
 }
