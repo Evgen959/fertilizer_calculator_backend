@@ -15,8 +15,12 @@ public class CalculatedOfFertilizer {
 
     private String calculatedDescription; // описание
 
-    @ElementCollection
-    private Set<String> fertilizerName = new HashSet<>(); // название удобрений
+    @OneToMany(mappedBy = "calculatedOfFertilizer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Fertilizer> fertilizer = new HashSet<>(); // название удобрений
+
+    @ManyToOne
+    @JoinColumn(name = "periodVegetation_id", nullable = false)
+    private PeriodVegetation periodVegetation;
 
     @ElementCollection
     private List<Double> weight = new ArrayList<>(); // Посчитанный вес удобрений
@@ -29,17 +33,18 @@ public class CalculatedOfFertilizer {
     // @NotNull: Это аннотация из Bean Validation API. Она применяется для проверки данных на уровне Java-кода (до сохранения в базу данных). Я думаю ее нужно использовать в DTO
     private User user; // Кто создал расчет удобрений
 
-    public CalculatedOfFertilizer(UUID id, String calculatedName, String calculatedDescription, Set<String> fertilizerName, List<Double> weight, List<Double> calculationError, User user) {
+    public CalculatedOfFertilizer() {
+    }
+
+    public CalculatedOfFertilizer(UUID id, String calculatedName, String calculatedDescription, Set<Fertilizer> fertilizer, PeriodVegetation periodVegetation, List<Double> weight, List<Double> calculationError, User user) {
         this.id = id;
         this.calculatedName = calculatedName;
         this.calculatedDescription = calculatedDescription;
-        this.fertilizerName = fertilizerName;
+        this.fertilizer = fertilizer;
+        this.periodVegetation = periodVegetation;
         this.weight = weight;
         this.calculationError = calculationError;
         this.user = user;
-    }
-
-    public CalculatedOfFertilizer() {
     }
 
     public UUID getId() {
@@ -66,12 +71,20 @@ public class CalculatedOfFertilizer {
         this.calculatedDescription = calculatedDescription;
     }
 
-    public Set<String> getFertilizerName() {
-        return fertilizerName;
+    public Set<Fertilizer> getFertilizer() {
+        return fertilizer;
     }
 
-    public void setFertilizerName(Set<String> fertilizerName) {
-        this.fertilizerName = fertilizerName;
+    public void setFertilizer(Set<Fertilizer> fertilizer) {
+        this.fertilizer = fertilizer;
+    }
+
+    public PeriodVegetation getPeriodVegetation() {
+        return periodVegetation;
+    }
+
+    public void setPeriodVegetation(PeriodVegetation periodVegetation) {
+        this.periodVegetation = periodVegetation;
     }
 
     public List<Double> getWeight() {
@@ -102,11 +115,11 @@ public class CalculatedOfFertilizer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CalculatedOfFertilizer that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(calculatedName, that.calculatedName) && Objects.equals(calculatedDescription, that.calculatedDescription) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(weight, that.weight) && Objects.equals(calculationError, that.calculationError) && Objects.equals(user, that.user);
+        return Objects.equals(id, that.id) && Objects.equals(calculatedName, that.calculatedName) && Objects.equals(calculatedDescription, that.calculatedDescription) && Objects.equals(fertilizer, that.fertilizer) && Objects.equals(periodVegetation, that.periodVegetation) && Objects.equals(weight, that.weight) && Objects.equals(calculationError, that.calculationError) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, calculatedName, calculatedDescription, fertilizerName, weight, calculationError, user);
+        return Objects.hash(id, calculatedName, calculatedDescription, fertilizer, periodVegetation, weight, calculationError, user);
     }
 }
