@@ -49,6 +49,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return null;
     }
 
+
     private CalculatedOfFertilizer calculator (PeriodVegetation periodVegetation, Set<Fertilizer> fertilizerSet){
 
         // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
@@ -61,6 +62,8 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         nTarget = periodVegetation.getN();
         pTarget = periodVegetation.getP();
         kTarget = periodVegetation.getK();
+
+//        caoTarget = periodVegetation.getCaO();
 
         // Состав удобрений (в процентах содержания, делим на 100)
 //        double[][] fertilizerComposition = {
@@ -156,6 +159,8 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
             System.out.println("Решение не найдено.");
         }
 
+
         return null;
+
     }
 }
