@@ -49,23 +49,43 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return null;
     }
 
-    private void calculator (PeriodVegetation periodVegetation, Set<Fertilizer> fertilizerSet){
+
+    private CalculatedOfFertilizer calculator (PeriodVegetation periodVegetation, Set<Fertilizer> fertilizerSet){
 
         // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
-        double caoTarget = 22; // Количество азота (CaO)
-        double nTarget = 13; // Количество азота (N)
-        double pTarget = 40;  // Количество фосфора (P)
-        double kTarget = 13;  // Количество калия (K)
+        double caoTarget = 0; // Количество азота 22 (CaO)
+        double nTarget = 0; // Количество азота 13 (N)
+        double pTarget = 0;  // Количество фосфора 40 (P)
+        double kTarget = 0;  // Количество калия 13 (K)
+
+        caoTarget = periodVegetation.getCaO();
+        nTarget = periodVegetation.getN();
+        pTarget = periodVegetation.getP();
+        kTarget = periodVegetation.getK();
 
 //        caoTarget = periodVegetation.getCaO();
 
         // Состав удобрений (в процентах содержания, делим на 100)
-        double[][] fertilizerComposition = {
-                {0.0 / 100, 0.0 / 100, 52.0 / 100, 34.0 / 100}, // Удобрение 1
-                {26.0 / 100, 15.5 / 100, 0.0 / 100, 0.0 / 100}, // Удобрение 2
-                {0.0 / 100, 0.0 / 100, 0.0 / 100, 50.0 / 100},  // Удобрение 3
-                {0.0 / 100, 0.0 / 100, 64.0 / 100, 0.0 / 100}  // Удобрение 4
-        };
+//        double[][] fertilizerComposition = {
+//                {0.0 / 100, 0.0 / 100, 52.0 / 100, 34.0 / 100}, // Удобрение 1
+//                {26.0 / 100, 15.5 / 100, 0.0 / 100, 0.0 / 100}, // Удобрение 2
+//                {0.0 / 100, 0.0 / 100, 0.0 / 100, 50.0 / 100},  // Удобрение 3
+//                {0.0 / 100, 0.0 / 100, 64.0 / 100, 0.0 / 100}  // Удобрение 4
+//        };
+
+        // Создаём двумерный массив с фиксированным размером 4 и инициализируем его пустым
+        double[][] fertilizerComposition = new double[4][4];
+
+        // Преобразуем объекты из fertilizerSet в строки массива
+        int index = 0;
+        for (Fertilizer fertilizer : fertilizerSet) {
+            if (index >= 4) break;
+            fertilizerComposition[index][0] = fertilizer.getCaO() / 100;
+            fertilizerComposition[index][1] = fertilizer.getN() / 100;
+            fertilizerComposition[index][2] = fertilizer.getP() / 100;
+            fertilizerComposition[index][3] = fertilizer.getK() / 100;
+            index++;
+        }
 
         // Создание целевой функции: минимизация x1 + x2 + x3 + 4x
         LinearObjectiveFunction objectiveFunction = new LinearObjectiveFunction(new double[]{1, 1, 1, 1}, 0);
@@ -138,6 +158,9 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         } else {
             System.out.println("Решение не найдено.");
         }
+
+
+        return null;
 
     }
 }
