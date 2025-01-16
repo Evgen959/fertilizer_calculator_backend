@@ -90,12 +90,26 @@ public class FertilizerCalculator {
             double[] targets = {caoTarget, nTarget, pTarget, kTarget};
             for (int i = 0; i < 4; i++) {
                 double error = Math.abs(calculatedTargets[i] - targets[i]);
-                double errorPercentage = (error != 0) ? (error / targets[i]) * 100 : 0; // Если цель равна 0, погрешность 0%
+                double errorPercentage = (error != 0) ? (error / targets[i]) * 100 : 0; // Если error равна 0, погрешность 0%
                 System.out.printf("%s: %.2f (погрешность: %.2f %%)%n", elements[i], calculatedTargets[i], errorPercentage);
             }
         } else {
             System.out.println("Решение не найдено.");
         }
+
+        /*
+        Необходимые количества удобрений:
+        Удобрение 1: 38,24 кг
+        Удобрение 2: 83,87 кг
+        Удобрение 3: 0,00 кг
+        Удобрение 4: 31,43 кг
+
+        Рассчитанное содержание:
+        CaO: 21,81 (погрешность: 0,88 %)
+        N: 13,00 (погрешность: 0,00 %)
+        P: 40,00 (погрешность: 0,00 %)
+        K: 13,00 (погрешность: 0,00 %)
+         */
 
     }
 }
