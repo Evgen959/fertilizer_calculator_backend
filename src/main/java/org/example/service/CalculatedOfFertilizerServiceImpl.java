@@ -86,6 +86,8 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
             index++;
         }
 
+
+
         // Создание целевой функции: минимизация x1 + x2 + x3 + 4x
         LinearObjectiveFunction objectiveFunction = new LinearObjectiveFunction(new double[]{1, 1, 1, 1}, 0);
 
