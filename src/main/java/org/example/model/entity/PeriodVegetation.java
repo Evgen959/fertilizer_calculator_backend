@@ -13,7 +13,7 @@ public class PeriodVegetation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // Уникальный идентификатор период вегетации
     private String periodVegetationName; // Название периода вегетации
-    private int numberOfDays; // Период вегетации
+    private int numberOfDays; // Период вегетации (количество дней)
     private String description; // Описание период вегетации
 
     @ManyToOne // Связь с plant
@@ -24,7 +24,7 @@ public class PeriodVegetation {
     @OneToMany(mappedBy = "periodVegetation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CalculatedOfFertilizer> calculatedOfFertilizers;
 
-    private double CaO; // Химический элемент оксид кальция необходимый растению в данный период вегетации
+    private double Ca; // Химический элемент оксид кальция необходимый растению в данный период вегетации
     private double Mg; // Химический элемент сульфат магния необходимый растению в данный период вегетации
     private double N; // Химический элемент азот необходимый растению в данный период вегетации
     private double P; // Химический элемент фосфор необходимый растению в данный период вегетации
@@ -33,14 +33,14 @@ public class PeriodVegetation {
     public PeriodVegetation() {
     }
 
-    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Plant plant, List<CalculatedOfFertilizer> calculatedOfFertilizers, double caO, double mg, double n, double p, double k) {
+    public PeriodVegetation(UUID id, String periodVegetationName, int numberOfDays, String description, Plant plant, List<CalculatedOfFertilizer> calculatedOfFertilizers, double ca, double mg, double n, double p, double k) {
         this.id = id;
         this.periodVegetationName = periodVegetationName;
         this.numberOfDays = numberOfDays;
         this.description = description;
         this.plant = plant;
         this.calculatedOfFertilizers = calculatedOfFertilizers;
-        this.CaO = caO;
+        this.Ca = ca;
         this.Mg = mg;
         this.N = n;
         this.P = p;
@@ -95,12 +95,12 @@ public class PeriodVegetation {
         this.calculatedOfFertilizers = calculatedOfFertilizers;
     }
 
-    public double getCaO() {
-        return CaO;
+    public double getCa() {
+        return Ca;
     }
 
-    public void setCaO(double caO) {
-        CaO = caO;
+    public void setCa(double ca) {
+        Ca = ca;
     }
 
     public double getMg() {
@@ -139,11 +139,11 @@ public class PeriodVegetation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PeriodVegetation that)) return false;
-        return numberOfDays == that.numberOfDays && Double.compare(CaO, that.CaO) == 0 && Double.compare(Mg, that.Mg) == 0 && Double.compare(N, that.N) == 0 && Double.compare(P, that.P) == 0 && Double.compare(K, that.K) == 0 && Objects.equals(id, that.id) && Objects.equals(periodVegetationName, that.periodVegetationName) && Objects.equals(description, that.description) && Objects.equals(plant, that.plant) && Objects.equals(calculatedOfFertilizers, that.calculatedOfFertilizers);
+        return numberOfDays == that.numberOfDays && Double.compare(Ca, that.Ca) == 0 && Double.compare(Mg, that.Mg) == 0 && Double.compare(N, that.N) == 0 && Double.compare(P, that.P) == 0 && Double.compare(K, that.K) == 0 && Objects.equals(id, that.id) && Objects.equals(periodVegetationName, that.periodVegetationName) && Objects.equals(description, that.description) && Objects.equals(plant, that.plant) && Objects.equals(calculatedOfFertilizers, that.calculatedOfFertilizers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, periodVegetationName, numberOfDays, description, plant, calculatedOfFertilizers, CaO, Mg, N, P, K);
+        return Objects.hash(id, periodVegetationName, numberOfDays, description, plant, calculatedOfFertilizers, Ca, Mg, N, P, K);
     }
 }

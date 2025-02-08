@@ -14,6 +14,7 @@ import org.example.service.mapping.CalculatedOfFertilizerMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,9 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
     @Transactional
     public CalculatedOfFertilizerDTO saveCalculatedOfFertilizer(CalculatedOfFertilizerDTO calculatedOfFertilizerDTO) {
         CalculatedOfFertilizer calculatedOfFertilizer = mapper.mapDtoToEntity(fertilizerCalculator(calculatedOfFertilizerDTO));
+
+        // Todo написать
+
         return mapper.mapEntityToDto(repository.save(calculatedOfFertilizer));
     }
 
@@ -40,7 +44,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return mapper.mapEntityToDto(repository.findCalculatedOfFertilizerByCalculatedOfFertilizerName(calculatedOfFertilizerName));
     }
 
-    // Todo написать метод для извлечения исходных данных для метода fertilizerCalculator
+
 
 
 
@@ -49,18 +53,16 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         return null;
     }
 
-    private CalculatedOfFertilizer calculator (PeriodVegetation periodVegetation, Set<Fertilizer> fertilizerSet){
+    private CalculatedOfFertilizer calculator (CalculatedOfFertilizer calculatedOfFertilizer){
+        PeriodVegetation periodVegetation = calculatedOfFertilizer.getPeriodVegetation();
+        Set<Fertilizer> fertilizerSet = calculatedOfFertilizer.getFertilizer();
 
         // Целевые значения (сколько нужно кальция, азота, фосфора и калия)
-        double caoTarget = 0; // Количество азота 22 (CaO)
-        double nTarget = 0; // Количество азота 13 (N)
-        double pTarget = 0;  // Количество фосфора 40 (P)
-        double kTarget = 0;  // Количество калия 13 (K)
+        double caTarget = periodVegetation.getCa(); // Количество азота 22 (Ca)
+        double nTarget = periodVegetation.getN(); // Количество азота 13 (N)
+        double pTarget = periodVegetation.getP();  // Количество фосфора 40 (P)
+        double kTarget = periodVegetation.getK();  // Количество калия 13 (K)
 
-        caoTarget = periodVegetation.getCaO();
-        nTarget = periodVegetation.getN();
-        pTarget = periodVegetation.getP();
-        kTarget = periodVegetation.getK();
 
         // Состав удобрений (в процентах содержания, делим на 100)
 //        double[][] fertilizerComposition = {
@@ -77,7 +79,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         int index = 0;
         for (Fertilizer fertilizer : fertilizerSet) {
             if (index >= 4) break;
-            fertilizerComposition[index][0] = fertilizer.getCaO() / 100;
+            fertilizerComposition[index][0] = fertilizer.getCa() / 100;
             fertilizerComposition[index][1] = fertilizer.getN() / 100;
             fertilizerComposition[index][2] = fertilizer.getP() / 100;
             fertilizerComposition[index][3] = fertilizer.getK() / 100;
@@ -92,7 +94,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         constraints.add(new LinearConstraint(
                 new double[]{fertilizerComposition[0][0], fertilizerComposition[1][0], fertilizerComposition[2][0], fertilizerComposition[3][0]}, // CaO-состав
                 Relationship.LEQ, // меньше или равно (0.2xi + 0.15xzy + 0.1xz <= 100)
-                caoTarget
+                caTarget
         ));
         constraints.add(new LinearConstraint(
                 new double[]{fertilizerComposition[0][1], fertilizerComposition[1][1], fertilizerComposition[2][1], fertilizerComposition[3][1]}, // N-состав
@@ -128,6 +130,44 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
                 new NonNegativeConstraint(true) // Гарантируем, что x >= 0
         );
 
+        if (solution == null) {
+            System.out.println("Решение не найдено.");
+            return null;
+        }
+
+        // Заполняем результат
+        double[] quantities = solution.getPoint();
+        double[] calculatedTargets = new double[4];
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < quantities.length; j++) {
+                calculatedTargets[i] += quantities[j] * fertilizerComposition[j][i];
+            }
+        }
+
+        // Рассчитываем погрешность
+        double[] targets = {caTarget, nTarget, pTarget, kTarget};
+        List<Double> errors = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            double error = (targets[i] != 0) ? Math.abs(calculatedTargets[i] - targets[i]) / targets[i] * 100 : 0;
+            errors.add(error);
+        }
+
+        // Создаём объект результата
+        CalculatedOfFertilizer calculatedOfFertilizer = new CalculatedOfFertilizer();
+        calculatedOfFertilizer.setCalculatedName("Рассчёт удобрений");
+        calculatedOfFertilizer.setCalculatedDescription("Автоматический расчёт удобрений");
+        calculatedOfFertilizer.setFertilizer(fertilizerSet);
+        calculatedOfFertilizer.setPeriodVegetation(periodVegetation);
+        calculatedOfFertilizer.setWeight(Arrays.asList(quantities[0], quantities[1], quantities[2], quantities[3]));
+        calculatedOfFertilizer.setCalculationError(errors);
+
+        // Сохраняем в базу
+        return calculatedOfFertilizer;
+    }
+}
+
+        /*
         // Вывод результата
         if (solution != null) {
             double[] quantities = solution.getPoint();
@@ -145,8 +185,8 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
                 }
             }
 
-            String[] elements = {"CaO","N", "P", "K"};
-            double[] targets = {caoTarget, nTarget, pTarget, kTarget};
+            String[] elements = {"Ca","N", "P", "K"};
+            double[] targets = {caTarget, nTarget, pTarget, kTarget};
             for (int i = 0; i < 4; i++) {
                 double error = Math.abs(calculatedTargets[i] - targets[i]);
                 double errorPercentage = (error != 0) ? (error / targets[i]) * 100 : 0; // Если цель равна 0, погрешность 0%
@@ -157,5 +197,19 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
         }
 
         return null;
-    }
-}
+        */
+
+
+        /*
+        Необходимые количества удобрений:
+        Удобрение 1: 38,24 кг
+        Удобрение 2: 83,87 кг
+        Удобрение 3: 0,00 кг
+        Удобрение 4: 31,43 кг
+
+        Рассчитанное содержание:
+        Ca: 21,81 (погрешность: 0,88 %)
+        N: 13,00 (погрешность: 0,00 %)
+        P: 40,00 (погрешность: 0,00 %)
+        K: 13,00 (погрешность: 0,00 %)
+         */

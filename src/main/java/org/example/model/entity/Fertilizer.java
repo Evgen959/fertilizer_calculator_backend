@@ -24,7 +24,7 @@ public class Fertilizer {
     @ManyToMany(mappedBy = "fertilizers")
     private final Set<User> users = new HashSet<>();// поле для связи пользователя и удобрения
 
-    private double CaO; // Химический элемент оксид кальция входящий в состав удобрения
+    private double Ca; // Химический элемент оксид кальция входящий в состав удобрения
     private double Mg; // Химический элемент сульфат магния входящий в состав удобрения
     private double N; // Химический элемент азот входящий в состав удобрения
     private double P; // Химический элемент фосфор входящий в состав удобрения
@@ -33,12 +33,12 @@ public class Fertilizer {
 
     }
 
-    public Fertilizer(UUID id, String fertilizerName, String description, CalculatedOfFertilizer calculatedOfFertilizer, double caO, double mg, double n, double p, double k) {
+    public Fertilizer(UUID id, String fertilizerName, String description, CalculatedOfFertilizer calculatedOfFertilizer, double ca, double mg, double n, double p, double k) {
         this.id = id;
         this.fertilizerName = fertilizerName;
         this.description = description;
         this.calculatedOfFertilizer = calculatedOfFertilizer;
-        this.CaO = caO;
+        this.Ca = ca;
         this.Mg = mg;
         this.N = n;
         this.P = p;
@@ -81,12 +81,12 @@ public class Fertilizer {
         return users;
     }
 
-    public double getCaO() {
-        return CaO;
+    public double getCa() {
+        return Ca;
     }
 
-    public void setCaO(double caO) {
-        CaO = caO;
+    public void setCa(double ca) {
+        Ca = ca;
     }
 
     public double getMg() {
@@ -125,11 +125,11 @@ public class Fertilizer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Fertilizer that)) return false;
-        return Double.compare(CaO, that.CaO) == 0 && Double.compare(Mg, that.Mg) == 0 && Double.compare(N, that.N) == 0 && Double.compare(P, that.P) == 0 && Double.compare(K, that.K) == 0 && Objects.equals(id, that.id) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(description, that.description) && Objects.equals(calculatedOfFertilizer, that.calculatedOfFertilizer) && Objects.equals(users, that.users);
+        return Double.compare(Ca, that.Ca) == 0 && Double.compare(Mg, that.Mg) == 0 && Double.compare(N, that.N) == 0 && Double.compare(P, that.P) == 0 && Double.compare(K, that.K) == 0 && Objects.equals(id, that.id) && Objects.equals(fertilizerName, that.fertilizerName) && Objects.equals(description, that.description) && Objects.equals(calculatedOfFertilizer, that.calculatedOfFertilizer) && Objects.equals(users, that.users);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fertilizerName, description, calculatedOfFertilizer, users, CaO, Mg, N, P, K);
+        return Objects.hash(id, fertilizerName, description, calculatedOfFertilizer, users, Ca, Mg, N, P, K);
     }
 }
