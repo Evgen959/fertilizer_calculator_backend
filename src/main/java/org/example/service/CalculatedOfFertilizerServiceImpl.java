@@ -32,7 +32,9 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
     @Override
     @Transactional
     public CalculatedOfFertilizerDTO saveCalculatedOfFertilizer(CalculatedOfFertilizerDTO calculatedOfFertilizerDTO) {
-        CalculatedOfFertilizer calculatedOfFertilizer = mapper.mapDtoToEntity(fertilizerCalculator(calculatedOfFertilizerDTO));
+        CalculatedOfFertilizer calculatedOfFertilizer = mapper.mapDtoToEntity(calculatedOfFertilizerDTO);
+
+        fertilizerCalculator(calculatedOfFertilizer);
 
         // Todo написать
 
@@ -47,13 +49,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
 
 
 
-
-    private CalculatedOfFertilizerDTO fertilizerCalculator(CalculatedOfFertilizerDTO calculatedOfFertilizerDTO) {
-
-        return null;
-    }
-
-    private CalculatedOfFertilizer calculator (CalculatedOfFertilizer calculatedOfFertilizer){
+    private void fertilizerCalculator (CalculatedOfFertilizer calculatedOfFertilizer){
         PeriodVegetation periodVegetation = calculatedOfFertilizer.getPeriodVegetation();
         Set<Fertilizer> fertilizerSet = calculatedOfFertilizer.getFertilizer();
 
@@ -73,7 +69,7 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
 //        };
 
         // Создаём двумерный массив с фиксированным размером 4 и инициализируем его пустым
-        double[][] fertilizerComposition = new double[4][4];
+        double[][] fertilizerComposition = new double[fertilizerSet.size()][4];
 
         // Преобразуем объекты из fertilizerSet в строки массива
         int index = 0;
@@ -89,36 +85,73 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
 
 
         // Создание целевой функции: минимизация x1 + x2 + x3 + 4x
-        LinearObjectiveFunction objectiveFunction = new LinearObjectiveFunction(new double[]{1, 1, 1, 1}, 0);
+        LinearObjectiveFunction objectiveFunction = new LinearObjectiveFunction(new double[fertilizerSet.size()], 0);
 
         // Создание ограничений
         List<LinearConstraint> constraints = new ArrayList<>();
+
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][0], fertilizerComposition[1][0], fertilizerComposition[2][0], fertilizerComposition[3][0]}, // CaO-состав
+                Arrays.stream(fertilizerComposition)
+                        .mapToDouble(row -> row[0])
+                        .toArray(), // Ca-состав
                 Relationship.LEQ, // меньше или равно (0.2xi + 0.15xzy + 0.1xz <= 100)
                 caTarget
         ));
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][1], fertilizerComposition[1][1], fertilizerComposition[2][1], fertilizerComposition[3][1]}, // N-состав
+                Arrays.stream(fertilizerComposition)
+                        .mapToDouble(row -> row[1])
+                        .toArray(), // N-состав
                 Relationship.GEQ, // Relationship.EQ равенство (0.2xi + 0.15xzy + 0.1xz = 100)
                 nTarget
         ));
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][2], fertilizerComposition[1][2], fertilizerComposition[2][2], fertilizerComposition[3][2]}, // P-состав
+                Arrays.stream(fertilizerComposition)
+                        .mapToDouble(row -> row[2])
+                        .toArray(), // P-состав
                 Relationship.GEQ,
                 pTarget
         ));
         constraints.add(new LinearConstraint(
-                new double[]{fertilizerComposition[0][3], fertilizerComposition[1][3], fertilizerComposition[2][3], fertilizerComposition[3][3]}, // K-состав
+                Arrays.stream(fertilizerComposition)
+                        .mapToDouble(row -> row[3])
+                        .toArray(), // K-состав
                 Relationship.GEQ,
                 kTarget
         ));
 
+//        constraints.add(new LinearConstraint(
+//                new double[]{fertilizerComposition[0][0], fertilizerComposition[1][0], fertilizerComposition[2][0], fertilizerComposition[3][0]}, // Ca-состав
+//                Relationship.LEQ, // меньше или равно (0.2xi + 0.15xzy + 0.1xz <= 100)
+//                caTarget
+//        ));
+//        constraints.add(new LinearConstraint(
+//                new double[]{fertilizerComposition[0][1], fertilizerComposition[1][1], fertilizerComposition[2][1], fertilizerComposition[3][1]}, // N-состав
+//                Relationship.GEQ, // Relationship.EQ равенство (0.2xi + 0.15xzy + 0.1xz = 100)
+//                nTarget
+//        ));
+//        constraints.add(new LinearConstraint(
+//                new double[]{fertilizerComposition[0][2], fertilizerComposition[1][2], fertilizerComposition[2][2], fertilizerComposition[3][2]}, // P-состав
+//                Relationship.GEQ,
+//                pTarget
+//        ));
+//        constraints.add(new LinearConstraint(
+//                new double[]{fertilizerComposition[0][3], fertilizerComposition[1][3], fertilizerComposition[2][3], fertilizerComposition[3][3]}, // K-состав
+//                Relationship.GEQ,
+//                kTarget
+//        ));
+
         // Добавляем ограничения на не отрицательность x1, x2, x3, x4
-        constraints.add(new LinearConstraint(new double[]{1, 0, 0, 0}, Relationship.GEQ, 0)); // x1 >= 0 (больше или равно - Relationship.GEQ)
-        constraints.add(new LinearConstraint(new double[]{0, 1, 0, 0}, Relationship.GEQ, 0)); // x2 >= 0
-        constraints.add(new LinearConstraint(new double[]{0, 0, 1, 0}, Relationship.GEQ, 0)); // x3 >= 0
-        constraints.add(new LinearConstraint(new double[]{0, 0, 0, 1}, Relationship.GEQ, 0)); // x4 >= 0
+
+        for (int i = 0; i < fertilizerSet.size(); i++) {
+            double[] constraintArray = new double[fertilizerSet.size()];
+            constraintArray[i] = 1;
+            constraints.add(new LinearConstraint(constraintArray, Relationship.GEQ, 0));
+        }
+
+//        constraints.add(new LinearConstraint(new double[]{1, 0, 0, 0}, Relationship.GEQ, 0)); // x1 >= 0 (больше или равно - Relationship.GEQ)
+//        constraints.add(new LinearConstraint(new double[]{0, 1, 0, 0}, Relationship.GEQ, 0)); // x2 >= 0
+//        constraints.add(new LinearConstraint(new double[]{0, 0, 1, 0}, Relationship.GEQ, 0)); // x3 >= 0
+//        constraints.add(new LinearConstraint(new double[]{0, 0, 0, 1}, Relationship.GEQ, 0)); // x4 >= 0
 
         // Преобразуем список ограничений в LinearConstraintSet
         LinearConstraintSet constraintSet = new LinearConstraintSet(constraints);
@@ -134,11 +167,14 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
 
         if (solution == null) {
             System.out.println("Решение не найдено.");
-            return null;
+            return;
         }
 
         // Заполняем результат
         double[] quantities = solution.getPoint();
+        List<Double> calculatedWeights = Arrays.stream(quantities)
+                .boxed()
+                .toList();
         double[] calculatedTargets = new double[4];
 
         for (int i = 0; i < 4; i++) {
@@ -155,17 +191,9 @@ public class CalculatedOfFertilizerServiceImpl implements CalculatedOfFertilizer
             errors.add(error);
         }
 
-        // Создаём объект результата
-        CalculatedOfFertilizer calculatedOfFertilizer = new CalculatedOfFertilizer();
-        calculatedOfFertilizer.setCalculatedName("Рассчёт удобрений");
-        calculatedOfFertilizer.setCalculatedDescription("Автоматический расчёт удобрений");
-        calculatedOfFertilizer.setFertilizer(fertilizerSet);
-        calculatedOfFertilizer.setPeriodVegetation(periodVegetation);
-        calculatedOfFertilizer.setWeight(Arrays.asList(quantities[0], quantities[1], quantities[2], quantities[3]));
+        // Записываем расчитаные значения в сущность
+        calculatedOfFertilizer.setWeight(calculatedWeights);
         calculatedOfFertilizer.setCalculationError(errors);
-
-        // Сохраняем в базу
-        return calculatedOfFertilizer;
     }
 }
 
